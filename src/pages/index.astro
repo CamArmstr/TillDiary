@@ -1,0 +1,74 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const entries = (await getCollection('journal')).sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+function getExcerpt(entry: typeof entries[0]): string {
+  if (entry.data.excerpt) return entry.data.excerpt;
+  const sentences = entry.body!.replace(/\n/g, ' ').match(/[^.!?]+[.!?]+/g);
+  return sentences ? sentences.slice(0, 2).join('').trim() : '';
+}
+---
+
+<Base title="Journal">
+  <section class="entries">
+    {entries.map((entry) => (
+      <article class="entry">
+        <a href={`/journal/${entry.data.slug}`}>
+          <h2 class="entry-title">{entry.data.title}</h2>
+        </a>
+        <time class="entry-date">{entry.data.date}</time>
+        <p class="entry-excerpt">{getExcerpt(entry)}</p>
+      </article>
+    ))}
+  </section>
+</Base>
+
+<style>
+  .entries {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .entry {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .entry:first-child {
+    padding-top: 0;
+  }
+
+  .entry-title {
+    font-size: 1.1rem;
+    font-weight: normal;
+    font-family: 'Courier New', Courier, monospace;
+    color: var(--parchment);
+    margin-bottom: 0.25rem;
+  }
+
+  .entry a {
+    text-decoration: none;
+  }
+
+  .entry a:hover .entry-title {
+    color: var(--amber);
+  }
+
+  .entry-date {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--parchment-dim);
+    margin-bottom: 0.5rem;
+  }
+
+  .entry-excerpt {
+    color: var(--parchment-dim);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+</style>

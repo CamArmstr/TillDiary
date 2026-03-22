@@ -1,0 +1,75 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('journal');
+  return entries.map((entry) => ({
+    params: { slug: entry.data.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<Base title={entry.data.title}>
+  <article class="journal-entry">
+    <header class="entry-header">
+      <h1>{entry.data.title}</h1>
+      <time>{entry.data.date}</time>
+    </header>
+    <div class="entry-body">
+      <Content />
+    </div>
+    <div class="entry-footer">
+      <a href="/">← Back to journal</a>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .entry-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .entry-header h1 {
+    font-size: 1.4rem;
+    font-weight: normal;
+    font-family: 'Courier New', Courier, monospace;
+    color: var(--parchment);
+    margin-bottom: 0.25rem;
+  }
+
+  .entry-header time {
+    font-size: 0.8rem;
+    color: var(--parchment-dim);
+  }
+
+  .entry-body {
+    font-size: 0.95rem;
+    line-height: 1.8;
+  }
+
+  .entry-body :global(p) {
+    margin-bottom: 1.2rem;
+  }
+
+  .entry-footer {
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.85rem;
+  }
+
+  .entry-footer a {
+    color: var(--parchment-dim);
+  }
+
+  .entry-footer a:hover {
+    color: var(--parchment);
+  }
+</style>
