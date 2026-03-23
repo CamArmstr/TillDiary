@@ -1,0 +1,46 @@
+/*
+ * TillDiary — Design Tokens
+ *
+ * ALL color/theme values live here. Do not hardcode colors elsewhere.
+ * Both dark (default) and light (system preference) modes are defined here.
+ * Base.astro imports this file — all pages inherit automatically.
+ *
+ * Palette logic:
+ *   Dark:  near-black background, warm parchment text
+ *   Light: warm off-white background, near-black text
+ *   Both modes use the same amber/green accent family, shifted for contrast.
+ */
+
+:root {
+  /* dark mode — default */
+  --bg:           #0f0e0a;
+  --parchment:    #f0ead4;
+  --parchment-dim:#b0a888;
+  --pass:         #6a9060;
+  --amber:        #b8903a;
+  --rule:         #3a3626;
+  --rule-strong:  #5a5240;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg:           #f5f0e8;
+    --parchment:    #1a1810;
+    --parchment-dim:#5a5240;
+    --pass:         #4a7040;
+    --amber:        #8a6020;
+    --rule:         #c8c0a8;
+    --rule-strong:  #a89880;
+  }
+}
+
+/* Base resets — also global */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}

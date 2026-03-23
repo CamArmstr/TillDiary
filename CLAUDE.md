@@ -22,6 +22,9 @@ Reflections = what I think about something, more broadly. Timeless, structured, 
 - Dates in frontmatter: YYYY-MM-DD
 - Slug: kebab-case, matches title
 
+## Theming — important
+All color/design tokens live in `src/styles/theme.css`. **Do not hardcode colors anywhere else.** Both dark (default) and light (system `prefers-color-scheme`) modes are defined there. Base.astro imports it; all pages inherit automatically. If you add a new page or component, use `var(--token-name)` — never raw hex values.
+
 ## Stack
 - Astro, minimal template
 - Content collections for journal entries (`src/content/journal/*.md`)
