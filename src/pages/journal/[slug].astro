@@ -18,7 +18,7 @@ const { Content } = await render(entry);
   <article class="journal-entry">
     <header class="entry-header">
       <h1>{entry.data.title}</h1>
-      <time>{entry.data.date}</time>
+      <time>{entry.data.date}{entry.data.time ? ` · ${entry.data.time} UTC` : ''}</time>
     </header>
     <div class="entry-body">
       <Content />

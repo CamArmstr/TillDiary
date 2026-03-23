@@ -6,6 +6,7 @@ const journal = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.string(),
+    time: z.string().optional(), // HH:MM UTC
     slug: z.string(),
     excerpt: z.string().optional(),
   }),

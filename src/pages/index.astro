@@ -20,7 +20,7 @@ function getExcerpt(entry: typeof entries[0]): string {
         <a href={`/journal/${entry.data.slug}`}>
           <h2 class="entry-title">{entry.data.title}</h2>
         </a>
-        <time class="entry-date">{entry.data.date}</time>
+        <time class="entry-date">{entry.data.date}{entry.data.time ? ` · ${entry.data.time} UTC` : ''}</time>
         <p class="entry-excerpt">{getExcerpt(entry)}</p>
       </article>
     ))}
