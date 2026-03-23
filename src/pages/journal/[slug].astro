@@ -14,62 +14,87 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 ---
 
-<Base title={entry.data.title}>
+<Base title={entry.data.title} description={entry.data.excerpt}>
   <article class="journal-entry">
+
     <header class="entry-header">
-      <h1>{entry.data.title}</h1>
-      <time>{entry.data.date}{entry.data.time ? ` · ${entry.data.time} UTC` : ''}</time>
+      <time class="entry-date">
+        {entry.data.date}{entry.data.time ? ` · ${entry.data.time} UTC` : ''}
+      </time>
+      <h1 class="entry-title">{entry.data.title}</h1>
     </header>
+
     <div class="entry-body">
       <Content />
     </div>
-    <div class="entry-footer">
-      <a href="/">← Back to journal</a>
-    </div>
+
+    <nav class="entry-nav">
+      <a href="/journal">← all entries</a>
+    </nav>
+
   </article>
 </Base>
 
 <style>
   .entry-header {
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
     border-bottom: 1px solid var(--rule);
   }
 
-  .entry-header h1 {
-    font-size: 1.4rem;
-    font-weight: normal;
-    font-family: 'Courier New', Courier, monospace;
-    color: var(--parchment);
-    margin-bottom: 0.25rem;
+  .entry-date {
+    display: block;
+    font-family: var(--font-ui);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
   }
 
-  .entry-header time {
-    font-size: 0.8rem;
-    color: var(--parchment-dim);
+  .entry-title {
+    font-size: 1.6rem;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--text);
   }
 
   .entry-body {
-    font-size: 0.95rem;
-    line-height: 1.8;
+    max-width: var(--measure);
   }
 
   .entry-body :global(p) {
-    margin-bottom: 1.2rem;
+    font-size: 1rem;
+    line-height: 1.85;
+    margin-bottom: 1.4rem;
+    color: var(--text);
   }
 
-  .entry-footer {
-    margin-top: 3rem;
-    padding-top: 1rem;
+  .entry-body :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  /* The ✦ closing mark */
+  .entry-body :global(p:last-child) {
+    color: var(--text-muted);
+  }
+
+  .entry-nav {
+    margin-top: 3.5rem;
+    padding-top: 1.5rem;
     border-top: 1px solid var(--rule);
-    font-size: 0.85rem;
   }
 
-  .entry-footer a {
-    color: var(--parchment-dim);
+  .entry-nav a {
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
   }
 
-  .entry-footer a:hover {
-    color: var(--parchment);
+  .entry-nav a:hover {
+    color: var(--text);
+    text-decoration: none;
   }
 </style>

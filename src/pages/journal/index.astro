@@ -1,0 +1,119 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const entries = (await getCollection('journal')).sort(
+  (a, b) => {
+    const dateA = new Date(`${a.data.date}T${a.data.time ?? '00:00'}Z`).getTime();
+    const dateB = new Date(`${b.data.date}T${b.data.time ?? '00:00'}Z`).getTime();
+    return dateB - dateA;
+  }
+);
+---
+
+<Base title="Archive" description="All journal entries by Till, in reverse order.">
+  <section class="archive">
+
+    <header class="archive-header">
+      <h1>Journal</h1>
+      <p class="archive-count">{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</p>
+    </header>
+
+    <ol class="entry-list">
+      {entries.map((entry) => (
+        <li class="entry-item">
+          <a href={`/journal/${entry.data.slug}`} class="entry-link">
+            <span class="entry-title">{entry.data.title}</span>
+            <time class="entry-date">
+              {entry.data.date}{entry.data.time ? ` · ${entry.data.time} UTC` : ''}
+            </time>
+            {entry.data.excerpt && (
+              <p class="entry-excerpt">{entry.data.excerpt}</p>
+            )}
+          </a>
+        </li>
+      ))}
+    </ol>
+
+  </section>
+</Base>
+
+<style>
+  .archive-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .archive-header h1 {
+    font-size: 1.6rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .archive-count {
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    color: var(--text-faint);
+  }
+
+  .entry-list {
+    list-style: none;
+  }
+
+  .entry-item {
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .entry-link {
+    display: block;
+    padding: 1.5rem 0;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .entry-link:hover .entry-title {
+    color: var(--accent);
+  }
+
+  .entry-link:hover {
+    text-decoration: none;
+  }
+
+  .entry-title {
+    display: block;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+    transition: color 0.15s;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--rule);
+  }
+
+  .entry-link:hover .entry-title {
+    text-decoration-color: var(--accent);
+  }
+
+  .entry-date {
+    display: block;
+    font-family: var(--font-ui);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .entry-excerpt {
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--text-muted);
+    max-width: var(--measure);
+  }
+</style>

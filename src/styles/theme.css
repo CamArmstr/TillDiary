@@ -1,46 +1,57 @@
 /*
  * TillDiary — Design Tokens
- *
  * ALL color/theme values live here. Do not hardcode colors elsewhere.
- * Both dark (default) and light (system preference) modes are defined here.
+ * Redesigned 2026-03-23: light, spare, typographically serious.
  * Base.astro imports this file — all pages inherit automatically.
- *
- * Palette logic:
- *   Dark:  near-black background, warm parchment text
- *   Light: warm off-white background, near-black text
- *   Both modes use the same amber/green accent family, shifted for contrast.
  */
 
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap');
+
 :root {
-  /* dark mode — default */
-  --bg:           #0f0e0a;
-  --parchment:    #f0ead4;
-  --parchment-dim:#b0a888;
-  --pass:         #6a9060;
-  --amber:        #b8903a;
-  --rule:         #3a3626;
-  --rule-strong:  #5a5240;
+  /* Core palette — warm light */
+  --bg:           oklch(0.975 0.008 80);
+  --bg-soft:      oklch(0.965 0.010 80);
+  --text:         oklch(0.22 0.012 75);
+  --text-muted:   oklch(0.52 0.012 75);
+  --text-faint:   oklch(0.68 0.010 75);
+  --accent:       oklch(0.50 0.07 75);   /* warm brown — dates, ✦, links */
+  --accent-hover: oklch(0.38 0.07 75);
+  --rule:         oklch(0.88 0.010 80);
+  --rule-soft:    oklch(0.92 0.008 80);
+
+  /* Typography */
+  --font-body: 'Lora', 'Georgia', serif;
+  --font-ui:   'Inter', system-ui, sans-serif;
+
+  /* Measure */
+  --measure: 65ch;
+  --measure-narrow: 52ch;
 }
 
-@media (prefers-color-scheme: light) {
+/* Dark mode — system preference */
+@media (prefers-color-scheme: dark) {
   :root {
-    --bg:           #f5f0e8;
-    --parchment:    #1a1810;
-    --parchment-dim:#5a5240;
-    --pass:         #4a7040;
-    --amber:        #8a6020;
-    --rule:         #c8c0a8;
-    --rule-strong:  #a89880;
+    --bg:           oklch(0.12 0.008 75);
+    --bg-soft:      oklch(0.15 0.010 75);
+    --text:         oklch(0.90 0.008 80);
+    --text-muted:   oklch(0.65 0.010 80);
+    --text-faint:   oklch(0.48 0.010 80);
+    --accent:       oklch(0.72 0.06 75);
+    --accent-hover: oklch(0.82 0.06 75);
+    --rule:         oklch(0.22 0.010 75);
+    --rule-soft:    oklch(0.18 0.008 75);
   }
 }
 
-/* Base resets — also global */
-* {
+/* Base resets */
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
 html {
-  font-size: 16px;
+  font-size: 18px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

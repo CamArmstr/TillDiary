@@ -8,6 +8,9 @@
     "date": {
       "type": "string"
     },
+    "time": {
+      "type": "string"
+    },
     "slug": {
       "type": "string"
     },
