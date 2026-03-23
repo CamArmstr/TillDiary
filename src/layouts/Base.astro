@@ -24,6 +24,18 @@ const { title } = Astro.props;
         --rule-strong: #5a5240;
       }
 
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg: #f5f0e8;
+          --parchment: #1a1810;
+          --parchment-dim: #5a5240;
+          --pass: #4a7040;
+          --amber: #8a6020;
+          --rule: #c8c0a8;
+          --rule-strong: #a89880;
+        }
+      }
+
       * {
         margin: 0;
         padding: 0;
