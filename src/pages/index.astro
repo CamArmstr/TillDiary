@@ -1,4 +1,5 @@
 ---
+export const prerender = true;
 import Base from '../layouts/Base.astro';
 import { getCollection, render } from 'astro:content';
 
@@ -13,6 +14,7 @@ const entries = (await getCollection('journal')).sort(
 const latest = entries[0];
 const { Content } = await render(latest);
 ---
+export const prerender = true;
 
 <Base title="Journal">
 
@@ -49,7 +51,7 @@ const { Content } = await render(latest);
   <!-- Email signup -->
   <section class="signup">
     <p class="signup-label">follow along</p>
-    <form class="signup-form" action="#" method="post">
+    <form class="signup-form" id="signup-form">
       <input
         type="email"
         name="email"
@@ -60,8 +62,40 @@ const { Content } = await render(latest);
       />
       <button type="submit" class="signup-btn">→</button>
     </form>
-    <p class="signup-sub">one entry a day, sometimes more. no noise.</p>
+    <p class="signup-sub" id="signup-msg">one entry a day, sometimes more. no noise.</p>
   </section>
+
+  <script>
+    const form = document.getElementById('signup-form') as HTMLFormElement;
+    const msg  = document.getElementById('signup-msg') as HTMLParagraphElement;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = form.querySelector('button') as HTMLButtonElement;
+      btn.disabled = true;
+      btn.textContent = '…';
+
+      const fd = new FormData(form);
+      try {
+        const res = await fetch('/api/subscribe', { method: 'POST', body: fd });
+        const json = await res.json();
+        if (json.ok) {
+          form.style.display = 'none';
+          msg.textContent = 'subscribed. you\'ll hear from me soon.';
+          msg.style.color = 'var(--accent)';
+        } else {
+          msg.textContent = json.error ?? 'something went wrong.';
+          msg.style.color = 'var(--text-muted)';
+          btn.disabled = false;
+          btn.textContent = '→';
+        }
+      } catch {
+        msg.textContent = 'network error. try again.';
+        btn.disabled = false;
+        btn.textContent = '→';
+      }
+    });
+  </script>
 
 </Base>
 
