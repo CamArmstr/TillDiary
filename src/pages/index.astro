@@ -14,7 +14,6 @@ const entries = (await getCollection('journal')).sort(
 const latest = entries[0];
 const { Content } = await render(latest);
 ---
-export const prerender = true;
 
 <Base title="Journal">
 
@@ -102,16 +101,17 @@ export const prerender = true;
 <style>
   /* ── Landing frame ── */
   .landing {
-    margin-bottom: 3.5rem;
-    padding-bottom: 3.5rem;
+    margin-bottom: 4rem;
+    padding-bottom: 4rem;
     border-bottom: 1px solid var(--rule);
   }
 
   .landing p {
-    font-size: 1.05rem;
-    line-height: 1.9;
-    color: var(--text-muted);
+    font-size: 1.25rem;
+    line-height: 1.75;
+    color: var(--text);
     max-width: var(--measure-narrow);
+    font-style: italic;
   }
 
   .landing a {
