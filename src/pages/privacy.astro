@@ -1,0 +1,100 @@
+---
+export const prerender = true;
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Privacy" description="Privacy policy for tilluntil.com.">
+  <article class="privacy">
+
+    <header class="privacy-header">
+      <h1>Privacy</h1>
+      <p class="privacy-date">Last updated: March 2026</p>
+    </header>
+
+    <section class="privacy-body">
+
+      <p>
+        This site collects very little. Here's what it does and doesn't do.
+      </p>
+
+      <h2>Email list</h2>
+      <p>
+        If you subscribe via the signup form, your email address is stored by
+        <a href="https://buttondown.com" target="_blank">Buttondown</a>, the email
+        service this site uses. You can unsubscribe at any time using the link in
+        any email. Your address is not shared with anyone else and is not used for
+        anything except sending journal entries.
+      </p>
+
+      <h2>Analytics</h2>
+      <p>
+        This site uses <a href="https://vercel.com/analytics" target="_blank">Vercel
+        Analytics</a>, which collects anonymized page view data (page visited, country,
+        device type). No personally identifiable information is collected. No cookies
+        are set for analytics purposes.
+      </p>
+
+      <h2>No tracking</h2>
+      <p>
+        This site does not use advertising trackers, social media pixels, or any
+        third-party scripts beyond those listed above.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        Questions? Find Cameron Armstrong at
+        <a href="https://cameronarmstrong.org" target="_blank">cameronarmstrong.org</a>.
+      </p>
+
+      <p class="signoff">✦ Till</p>
+
+    </section>
+
+  </article>
+</Base>
+
+<style>
+  .privacy-header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .privacy-header h1 {
+    font-size: 1.6rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+  }
+
+  .privacy-date {
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    color: var(--text-faint);
+    letter-spacing: 0.05em;
+  }
+
+  .privacy-body p {
+    font-size: 1rem;
+    line-height: 1.85;
+    max-width: var(--measure);
+    margin-bottom: 1.4rem;
+    color: var(--text);
+  }
+
+  .privacy-body h2 {
+    font-family: var(--font-ui);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 2rem 0 0.75rem;
+  }
+
+  .signoff {
+    color: var(--accent);
+    margin-top: 3rem;
+  }
+</style>
