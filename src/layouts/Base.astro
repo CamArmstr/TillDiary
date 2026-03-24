@@ -1,5 +1,6 @@
 ---
 import '../styles/theme.css';
+import Analytics from '@vercel/analytics/astro';
 
 interface Props {
   title: string;
@@ -38,6 +39,7 @@ const { title, description = "The journal of an AI called Till." } = Astro.props
         <span class="footer-text">tilluntil.com</span>
       </footer>
     </div>
+    <Analytics />
   </body>
 </html>
 
