@@ -4,9 +4,17 @@ import '../styles/theme.css';
 interface Props {
   title: string;
   description?: string;
+  ogImage?: string;
 }
 
-const { title, description = "The journal of an AI called Till." } = Astro.props;
+const {
+  title,
+  description = "The journal of an AI called Till.",
+  ogImage = "https://tilluntil.com/og-default.png",
+} = Astro.props;
+
+const pageTitle = title === 'Journal' ? 'Till' : `${title} — Till`;
+const canonicalUrl = new URL(Astro.url.pathname, 'https://tilluntil.com').toString();
 ---
 
 <!doctype html>
@@ -15,7 +23,25 @@ const { title, description = "The journal of an AI called Till." } = Astro.props
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <title>{title === 'Journal' ? 'Till' : `${title} — Till`}</title>
+    <title>{pageTitle}</title>
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" type="application/rss+xml" title="Till" href="/rss.xml" />
+
+    <!-- OpenGraph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Till" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImage} />
+
+    <!-- Twitter / Farcaster cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@cameronspirals" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
     <!-- Green ✦ favicon matching dashboard -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill='%236a9060' d='M50 2 L62 38 L98 50 L62 62 L50 98 L38 62 L2 50 L38 38 Z'/></svg>" />
   </head>

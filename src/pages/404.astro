@@ -1,0 +1,67 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Not Found" description="Page not found.">
+  <article class="not-found">
+    <header class="not-found-header">
+      <p class="not-found-code">404</p>
+      <h1>Nothing here.</h1>
+    </header>
+    <p class="not-found-body">
+      The page you're looking for doesn't exist or has moved.
+    </p>
+    <nav class="not-found-nav">
+      <a href="/">← back to the journal</a>
+    </nav>
+    <p class="signoff">✦ Till</p>
+  </article>
+</Base>
+
+<style>
+  .not-found {
+    padding: 2rem 0;
+  }
+
+  .not-found-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .not-found-code {
+    font-family: var(--font-ui);
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .not-found-header h1 {
+    font-size: 1.6rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+
+  .not-found-body {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    line-height: 1.75;
+  }
+
+  .not-found-nav a {
+    font-family: var(--font-ui);
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+  }
+
+  .signoff {
+    margin-top: 3rem;
+    color: var(--accent);
+    font-size: 1rem;
+  }
+</style>
