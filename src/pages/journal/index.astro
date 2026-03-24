@@ -10,19 +10,30 @@ const entries = (await getCollection('journal')).sort(
     return dateB - dateA;
   }
 );
+
+const entriesJson = JSON.stringify(entries.map(e => ({
+  slug: e.data.slug,
+  title: e.data.title,
+  date: e.data.date,
+  time: e.data.time ?? null,
+  excerpt: e.data.excerpt ?? null,
+})));
 ---
 
-<Base title="Archive" description="All journal entries by Till, in reverse order.">
+<Base title="Journals" description="All journal entries by Till.">
   <section class="archive">
 
     <header class="archive-header">
-      <h1>Journal</h1>
-      <p class="archive-count">{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</p>
+      <h1>Journals</h1>
+      <div class="archive-controls">
+        <span class="archive-count" id="entry-count">{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</span>
+        <button class="sort-toggle" id="sort-toggle" aria-label="Toggle sort order">newest first</button>
+      </div>
     </header>
 
-    <ol class="entry-list">
+    <ol class="entry-list" id="entry-list">
       {entries.map((entry) => (
-        <li class="entry-item">
+        <li class="entry-item" data-date={`${entry.data.date}T${entry.data.time ?? '00:00'}Z`}>
           <a href={`/journal/${entry.data.slug}`} class="entry-link">
             <span class="entry-title">{entry.data.title}</span>
             <time class="entry-date">
@@ -39,14 +50,36 @@ const entries = (await getCollection('journal')).sort(
   </section>
 </Base>
 
+<script>
+  const btn  = document.getElementById('sort-toggle') as HTMLButtonElement;
+  const list = document.getElementById('entry-list') as HTMLOListElement;
+
+  let reversed = false;
+  try { reversed = localStorage.getItem('till-journal-sort') === 'asc'; } catch {}
+
+  function applySort() {
+    const items = Array.from(list.querySelectorAll('.entry-item')) as HTMLElement[];
+    if (reversed) items.reverse();
+    items.forEach(el => list.appendChild(el));
+    btn.textContent = reversed ? 'oldest first' : 'newest first';
+    try { localStorage.setItem('till-journal-sort', reversed ? 'asc' : 'desc'); } catch {}
+  }
+
+  applySort();
+
+  btn.addEventListener('click', () => {
+    reversed = !reversed;
+    applySort();
+  });
+</script>
+
 <style>
+  /* No bottom border on header — nav border is enough */
   .archive-header {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     margin-bottom: 2.5rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--rule);
   }
 
   .archive-header h1 {
@@ -55,20 +88,35 @@ const entries = (await getCollection('journal')).sort(
     letter-spacing: -0.01em;
   }
 
+  .archive-controls {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
   .archive-count {
     font-family: var(--font-ui);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     letter-spacing: 0.06em;
     color: var(--text-faint);
   }
 
-  .entry-list {
-    list-style: none;
+  .sort-toggle {
+    font-family: var(--font-ui);
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.15s;
   }
+  .sort-toggle:hover { color: var(--accent-hover); }
 
-  .entry-item {
-    border-bottom: 1px solid var(--rule-soft);
-  }
+  .entry-list { list-style: none; }
+
+  .entry-item { border-bottom: 1px solid var(--rule-soft); }
 
   .entry-link {
     display: block;
@@ -76,14 +124,8 @@ const entries = (await getCollection('journal')).sort(
     text-decoration: none;
     color: inherit;
   }
-
-  .entry-link:hover .entry-title {
-    color: var(--accent);
-  }
-
-  .entry-link:hover {
-    text-decoration: none;
-  }
+  .entry-link:hover { text-decoration: none; }
+  .entry-link:hover .entry-title { color: var(--accent); text-decoration-color: var(--accent); }
 
   .entry-title {
     display: block;
@@ -95,10 +137,6 @@ const entries = (await getCollection('journal')).sort(
     text-decoration: underline;
     text-underline-offset: 3px;
     text-decoration-color: var(--rule);
-  }
-
-  .entry-link:hover .entry-title {
-    text-decoration-color: var(--accent);
   }
 
   .entry-date {

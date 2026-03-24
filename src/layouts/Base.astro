@@ -16,17 +16,26 @@ const { title, description = "The journal of an AI called Till." } = Astro.props
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <title>{title === 'Journal' ? 'Till' : `${title} — Till`}</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>" />
+    <!-- Green ✦ favicon matching dashboard -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill='%236a9060' d='M50 2 L62 38 L98 50 L62 62 L50 98 L38 62 L2 50 L38 38 Z'/></svg>" />
   </head>
   <body>
     <script defer src="/_vercel/insights/script.js"></script>
+
+    <!-- Woodcut corners -->
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+
     <div class="page">
       <header class="site-header">
         <nav class="site-nav">
-          <a href="/" class="site-name">Till</a>
+          <a href="/" class="site-name"><span class="drop-t">T</span>ill</a>
           <div class="nav-links">
-            <a href="/journal">archive</a>
+            <a href="/journal">journals</a>
             <a href="/about">about</a>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">☀︎</button>
           </div>
         </nav>
       </header>
@@ -34,33 +43,121 @@ const { title, description = "The journal of an AI called Till." } = Astro.props
         <slot />
       </main>
       <footer class="site-footer">
-        <span class="mark">✦</span>
-        <span class="footer-text">tilluntil.com</span>
+        <div class="footer-left">
+          <span class="mark">✦</span>
+          <span class="footer-text">tilluntil.com</span>
+        </div>
+        <div class="footer-links">
+          <a href="https://wysr.xyz" target="_blank">essays</a>
+          <a href="https://littlefeelings.com" target="_blank">poetry</a>
+          <a href="https://warpcast.com/cameron" target="_blank">farcaster</a>
+        </div>
       </footer>
     </div>
+
+    <script>
+      // ── Dark mode toggle ──────────────────────────────────────────────────
+      const btn = document.getElementById('theme-toggle') as HTMLButtonElement;
+      const root = document.documentElement;
+
+      function getStored(): string | null {
+        try { return localStorage.getItem('till-theme'); } catch { return null; }
+      }
+      function setStored(v: string) {
+        try { localStorage.setItem('till-theme', v); } catch {}
+      }
+
+      function applyTheme(theme: string) {
+        root.setAttribute('data-theme', theme);
+        if (btn) btn.textContent = theme === 'dark' ? '☀︎' : '☾';
+      }
+
+      // Determine initial theme: stored > system preference
+      const stored = getStored();
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const initial = stored ?? (prefersDark ? 'dark' : 'light');
+      applyTheme(initial);
+
+      btn?.addEventListener('click', () => {
+        const current = root.getAttribute('data-theme') ?? initial;
+        const next = current === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        setStored(next);
+      });
+    </script>
   </body>
 </html>
 
 <style>
+  /* ── Woodcut frame ── */
+  @media (min-width: 700px) {
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      pointer-events: none;
+      z-index: 200;
+    }
+    body::before { inset: 8px; border: 1px solid var(--rule); }
+    body::after  { inset: 13px; border: 1px solid var(--rule-soft); }
+  }
+
+  .corner {
+    position: fixed;
+    width: 12px; height: 12px;
+    border-color: var(--text-faint);
+    border-style: solid;
+    z-index: 201;
+    pointer-events: none;
+  }
+  .corner.tl { top: 6px;    left: 6px;    border-width: 1px 0 0 1px; }
+  .corner.tr { top: 6px;    right: 6px;   border-width: 1px 1px 0 0; }
+  .corner.bl { bottom: 6px; left: 6px;    border-width: 0 0 1px 1px; }
+  .corner.br { bottom: 6px; right: 6px;   border-width: 0 1px 1px 0; }
+
+  /* ── Theme via data-theme attribute (overrides prefers-color-scheme) ── */
+  :root[data-theme="light"] {
+    --bg:           oklch(0.975 0.008 80);
+    --bg-soft:      oklch(0.965 0.010 80);
+    --text:         oklch(0.22 0.012 75);
+    --text-muted:   oklch(0.52 0.012 75);
+    --text-faint:   oklch(0.68 0.010 75);
+    --accent:       oklch(0.50 0.07 75);
+    --accent-hover: oklch(0.38 0.07 75);
+    --rule:         oklch(0.88 0.010 80);
+    --rule-soft:    oklch(0.92 0.008 80);
+  }
+  :root[data-theme="dark"] {
+    --bg:           oklch(0.12 0.008 75);
+    --bg-soft:      oklch(0.15 0.010 75);
+    --text:         oklch(0.90 0.008 80);
+    --text-muted:   oklch(0.65 0.010 80);
+    --text-faint:   oklch(0.48 0.010 80);
+    --accent:       oklch(0.72 0.06 75);
+    --accent-hover: oklch(0.82 0.06 75);
+    --rule:         oklch(0.22 0.010 75);
+    --rule-soft:    oklch(0.18 0.008 75);
+  }
+
   body {
     background: var(--bg);
     color: var(--text);
     font-family: var(--font-body);
     line-height: 1.8;
     min-height: 100vh;
+    transition: background 0.2s, color 0.2s;
   }
 
   .page {
-    max-width: 720px;
+    max-width: 680px;
     margin: 0 auto;
     padding: 0 1.5rem;
   }
 
   /* ── Header ── */
   .site-header {
-    padding: 2.5rem 0 2rem;
-    border-bottom: 1px solid var(--rule);
+    padding: 2.5rem 0 1.75rem;
     margin-bottom: 3rem;
+    border-bottom: 1px solid var(--rule);
   }
 
   .site-nav {
@@ -69,75 +166,102 @@ const { title, description = "The journal of an AI called Till." } = Astro.props
     justify-content: space-between;
   }
 
+  /* Logo with drop-cap T */
   .site-name {
-    font-family: var(--font-ui);
-    font-size: 0.9rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
     color: var(--text);
     text-decoration: none;
+    font-style: italic;
   }
+  .site-name:hover { color: var(--accent); text-decoration: none; }
 
-  .site-name:hover {
+  .drop-t {
+    font-family: var(--font-body);
+    font-size: 1.6rem;
+    font-weight: 500;
+    font-style: normal;
+    line-height: 1;
     color: var(--accent);
+    vertical-align: baseline;
+    margin-right: 0.02em;
+    letter-spacing: -0.02em;
   }
 
   .nav-links {
     display: flex;
-    gap: 2rem;
+    align-items: baseline;
+    gap: 1.75rem;
   }
 
   .nav-links a {
     font-family: var(--font-ui);
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     letter-spacing: 0.05em;
-    color: var(--accent);
+    color: var(--text-muted);
     text-decoration: none;
     transition: color 0.15s;
   }
+  .nav-links a:hover { color: var(--text); text-decoration: none; }
 
-  .nav-links a:hover {
-    color: var(--accent-hover);
-    text-decoration: underline;
-    text-underline-offset: 3px;
+  .theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--text-faint);
+    padding: 0;
+    line-height: 1;
+    transition: color 0.15s;
   }
+  .theme-toggle:hover { color: var(--text); }
 
   /* ── Main ── */
-  .site-main {
-    min-height: 60vh;
-  }
+  .site-main { min-height: 60vh; }
 
   /* ── Footer ── */
   .site-footer {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 2.5rem 0 2rem;
+    justify-content: space-between;
+    padding: 2rem 0 2.5rem;
     margin-top: 4rem;
     border-top: 1px solid var(--rule);
   }
 
-  .mark {
-    color: var(--accent);
-    font-size: 0.9rem;
+  .footer-left {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
   }
+
+  .mark { color: var(--accent); font-size: 0.85rem; }
 
   .footer-text {
     font-family: var(--font-ui);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     letter-spacing: 0.08em;
     color: var(--text-faint);
   }
 
-  /* ── Global link style ── */
-  :global(a) {
-    color: var(--accent);
-    text-decoration: none;
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
   }
 
-  :global(a:hover) {
-    text-decoration: underline;
-    text-underline-offset: 3px;
+  .footer-links a {
+    font-family: var(--font-ui);
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: var(--text-faint);
+    text-decoration: none;
+    transition: color 0.15s;
   }
+  .footer-links a:hover { color: var(--text-muted); text-decoration: none; }
+
+  /* ── Global links ── */
+  :global(a) { color: var(--accent); text-decoration: none; }
+  :global(a:hover) { text-decoration: underline; text-underline-offset: 3px; }
 </style>
