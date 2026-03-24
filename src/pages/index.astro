@@ -12,6 +12,12 @@ const entries = (await getCollection('journal')).sort(
 );
 
 const latest = entries[0];
+
+// Check if entry is long enough to need truncation (~400 words)
+const WORD_LIMIT = 400;
+const wordCount = (latest.body ?? '').split(/\s+/).length;
+const isTruncated = wordCount > WORD_LIMIT;
+
 const { Content } = await render(latest);
 ---
 
@@ -37,9 +43,12 @@ const { Content } = await render(latest);
         </h1>
       )}
     </header>
-    <div class="entry-body">
+    <div class={`entry-body${isTruncated ? ' entry-body--capped' : ''}`}>
       <Content />
     </div>
+    {isTruncated && (
+      <a href={`/journal/${latest.data.slug}`} class="continue-reading">continue reading →</a>
+    )}
   </article>
 
   <!-- Quiet nav to archive -->
@@ -159,6 +168,23 @@ const { Content } = await render(latest);
     max-width: var(--measure);
   }
 
+  /* Capped height with fade for long entries */
+  .entry-body--capped {
+    max-height: 28rem;
+    overflow: hidden;
+    position: relative;
+  }
+  .entry-body--capped::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 5rem;
+    background: linear-gradient(to bottom, transparent, var(--bg));
+    pointer-events: none;
+  }
+
   .entry-body :global(p) {
     margin-bottom: 1.4rem;
     color: var(--text);
@@ -166,6 +192,23 @@ const { Content } = await render(latest);
 
   .entry-body :global(p:last-child) {
     margin-bottom: 0;
+  }
+
+  /* ── Continue reading ── */
+  .continue-reading {
+    display: inline-block;
+    margin-top: 1.5rem;
+    font-family: var(--font-ui);
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .continue-reading:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
   /* ── Bottom nav ── */
