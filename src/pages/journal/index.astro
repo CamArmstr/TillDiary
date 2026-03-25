@@ -65,7 +65,7 @@ const entriesJson = JSON.stringify(entries.map(e => ({
       return asc ? da - db : db - da;
     });
     items.forEach(el => list.appendChild(el));
-    btn.textContent = asc ? 'newest first' : 'oldest first';
+    btn.textContent = asc ? 'oldest first' : 'newest first';
   });
 </script>
 
