@@ -9,6 +9,7 @@ const journal = defineCollection({
     time: z.string().optional(), // HH:MM UTC
     slug: z.string(),
     excerpt: z.string().optional(),
+    draft: z.boolean().optional(), // true = pending Cameron's approval, excluded from live site
   }),
 });
 

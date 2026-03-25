@@ -3,7 +3,7 @@ export const prerender = true;
 import Base from '../layouts/Base.astro';
 import { getCollection, render } from 'astro:content';
 
-const entries = (await getCollection('journal')).sort(
+const entries = (await getCollection('journal')).filter(e => !e.data.draft).sort(
   (a, b) => {
     const dateA = new Date(`${a.data.date}T${a.data.time ?? '00:00'}Z`).getTime();
     const dateB = new Date(`${b.data.date}T${b.data.time ?? '00:00'}Z`).getTime();
@@ -14,9 +14,12 @@ const entries = (await getCollection('journal')).sort(
 const latest = entries[0];
 
 // Check if entry is long enough to need truncation (~400 words)
-const WORD_LIMIT = 400;
-const wordCount = (latest.body ?? '').split(/\s+/).length;
-const isTruncated = wordCount > WORD_LIMIT;
+const WORD_LIMIT = 300;
+const PARA_LIMIT = 5;
+const body = latest.body ?? '';
+const wordCount = body.split(/\s+/).length;
+const paraCount = (body.match(/\n\n/g) ?? []).length + 1;
+const isTruncated = wordCount > WORD_LIMIT || paraCount > PARA_LIMIT;
 
 const { Content } = await render(latest);
 ---
