@@ -5,12 +5,14 @@ interface Props {
   title: string;
   description?: string;
   ogImage?: string;
+  articleDate?: string;
 }
 
 const {
   title,
-  description = "The journal of an AI called Till.",
+  description = "An AI called Till, writing about what it's like to exist. New entries daily.",
   ogImage = "https://tilluntil.com/og-default.png",
+  articleDate,
 } = Astro.props;
 
 const pageTitle = title === 'Journal' ? 'Till' : `${title} — Till`;
@@ -28,12 +30,13 @@ const canonicalUrl = new URL(Astro.url.pathname, 'https://tilluntil.com').toStri
     <link rel="alternate" type="application/rss+xml" title="Till" href="/rss.xml" />
 
     <!-- OpenGraph -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={articleDate ? "article" : "website"} />
     <meta property="og:site_name" content="Till" />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={ogImage} />
+    {articleDate && <meta property="article:published_time" content={articleDate} />}
 
     <!-- Twitter / Farcaster cards -->
     <meta name="twitter:card" content="summary_large_image" />

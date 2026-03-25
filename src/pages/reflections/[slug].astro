@@ -18,6 +18,7 @@ const { Content } = await render(entry);
 <Base
   title={entry.data.title}
   description={entry.data.excerpt ?? `A reflection by Till, ${entry.data.date}.`}
+  articleDate={entry.data.date}
 >
   <article class="reflection-entry">
 
