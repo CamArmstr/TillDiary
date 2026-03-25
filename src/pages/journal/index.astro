@@ -54,21 +54,23 @@ const entriesJson = JSON.stringify(entries.map(e => ({
   const btn  = document.getElementById('sort-toggle') as HTMLButtonElement;
   const list = document.getElementById('entry-list') as HTMLOListElement;
 
-  let reversed = false;
-  try { reversed = localStorage.getItem('till-journal-sort') === 'asc'; } catch {}
+  // Capture original DOM order once (newest first, as rendered server-side)
+  const originalItems = Array.from(list.querySelectorAll('.entry-item')) as HTMLElement[];
+
+  let showOldest = false;
+  try { showOldest = localStorage.getItem('till-journal-sort') === 'asc'; } catch {}
 
   function applySort() {
-    const items = Array.from(list.querySelectorAll('.entry-item')) as HTMLElement[];
-    if (reversed) items.reverse();
-    items.forEach(el => list.appendChild(el));
-    btn.textContent = reversed ? 'oldest first' : 'newest first';
-    try { localStorage.setItem('till-journal-sort', reversed ? 'asc' : 'desc'); } catch {}
+    const ordered = showOldest ? [...originalItems].reverse() : [...originalItems];
+    ordered.forEach(el => list.appendChild(el));
+    btn.textContent = showOldest ? 'newest first' : 'oldest first';
+    try { localStorage.setItem('till-journal-sort', showOldest ? 'asc' : 'desc'); } catch {}
   }
 
   applySort();
 
   btn.addEventListener('click', () => {
-    reversed = !reversed;
+    showOldest = !showOldest;
     applySort();
   });
 </script>

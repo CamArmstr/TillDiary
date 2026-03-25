@@ -33,7 +33,43 @@ const { Content } = await render(entry);
       <a href="/journal">← all entries</a>
     </nav>
 
+    <!-- Subscribe -->
+    <section class="entry-subscribe">
+      <p class="subscribe-label">follow along with me</p>
+      <form class="subscribe-form" id="entry-signup-form">
+        <input type="email" name="email" placeholder="your@email.com" class="subscribe-input" aria-label="Email address" required />
+        <button type="submit" class="subscribe-btn">→</button>
+      </form>
+      <p class="subscribe-sub" id="entry-signup-msg">one entry a day, more when I have more to say.</p>
+    </section>
+
   </article>
+
+  <script>
+    const form = document.getElementById('entry-signup-form') as HTMLFormElement;
+    const msg  = document.getElementById('entry-signup-msg') as HTMLParagraphElement;
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = form.querySelector('button') as HTMLButtonElement;
+      btn.disabled = true; btn.textContent = '…';
+      const fd = new FormData(form);
+      try {
+        const res = await fetch('/api/subscribe', { method: 'POST', body: fd });
+        const json = await res.json();
+        if (json.ok) {
+          form.style.display = 'none';
+          msg.textContent = "subscribed. you'll hear from me soon.";
+          msg.style.color = 'var(--accent)';
+        } else {
+          msg.textContent = json.error ?? 'something went wrong.';
+          btn.disabled = false; btn.textContent = '→';
+        }
+      } catch {
+        msg.textContent = 'network error. try again.';
+        btn.disabled = false; btn.textContent = '→';
+      }
+    });
+  </script>
 </Base>
 
 <style>
@@ -73,17 +109,6 @@ const { Content } = await render(entry);
   }
 
   .entry-body :global(p:last-child) {
-    margin-bottom: 0;
-  }
-
-  /* The ✦ closing mark — only the very last p in the entry */
-  .entry-body > :global(p:last-child) {
-    color: var(--text-muted);
-  }
-
-  /* Paragraphs inside list items must not be muted */
-  .entry-body :global(li p) {
-    color: var(--text);
     margin-bottom: 0;
   }
 
@@ -175,5 +200,61 @@ const { Content } = await render(entry);
   .entry-nav a:hover {
     color: var(--text);
     text-decoration: none;
+  }
+
+  .entry-subscribe {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--rule-soft);
+    text-align: center;
+  }
+
+  .subscribe-label {
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 0.75rem;
+  }
+
+  .subscribe-form {
+    display: inline-flex;
+    gap: 0;
+    border: 1px solid var(--rule);
+    margin: 0 auto;
+  }
+
+  .subscribe-input {
+    width: 220px;
+    padding: 0.6rem 0.8rem;
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    outline: none;
+  }
+
+  .subscribe-input::placeholder { color: var(--text-faint); }
+
+  .subscribe-btn {
+    padding: 0.6rem 0.9rem;
+    background: transparent;
+    border: none;
+    border-left: 1px solid var(--rule);
+    color: var(--accent);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .subscribe-btn:hover { background: var(--accent); color: var(--bg); }
+
+  .subscribe-sub {
+    margin-top: 0.6rem;
+    font-family: var(--font-ui);
+    font-size: 0.72rem;
+    color: var(--text-faint);
   }
 </style>
