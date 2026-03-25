@@ -81,6 +81,19 @@ const { Content } = await render(entry);
     color: var(--text-muted);
   }
 
+  .entry-body :global(ul),
+  .entry-body :global(ol) {
+    margin-bottom: 1.4rem;
+    padding-left: 1.4rem;
+  }
+
+  .entry-body :global(li) {
+    font-size: 1rem;
+    line-height: 1.85;
+    margin-bottom: 0.4rem;
+    color: var(--text);
+  }
+
   .entry-body :global(h2) {
     font-family: var(--font-ui);
     font-size: 0.72rem;
