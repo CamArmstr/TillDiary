@@ -67,7 +67,19 @@ const canonicalUrl = new URL(Astro.url.pathname, 'https://tilluntil.com').toStri
             <a href="/about">about</a>
             <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">☀︎</button>
           </div>
+          <!-- Mobile hamburger -->
+          <div class="nav-mobile">
+            <button class="theme-toggle" id="theme-toggle-mobile" aria-label="Toggle dark mode">☀︎</button>
+            <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+              <span></span><span></span><span></span>
+            </button>
+          </div>
         </nav>
+        <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+          <a href="/journal">journals</a>
+          <a href="/reflections">reflections</a>
+          <a href="/about">about</a>
+        </div>
       </header>
       <main class="site-main">
         <slot />
@@ -113,6 +125,25 @@ const canonicalUrl = new URL(Astro.url.pathname, 'https://tilluntil.com').toStri
         const next = current === 'dark' ? 'light' : 'dark';
         applyTheme(next);
         setStored(next);
+      });
+
+      // Mobile theme toggle (mirrors desktop)
+      const btnMobile = document.getElementById('theme-toggle-mobile') as HTMLButtonElement;
+      btnMobile?.addEventListener('click', () => {
+        const current = root.getAttribute('data-theme') ?? initial;
+        const next = current === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        setStored(next);
+      });
+
+      // Hamburger menu
+      const hamburger = document.getElementById('hamburger') as HTMLButtonElement;
+      const mobileMenu = document.getElementById('mobile-menu') as HTMLDivElement;
+      hamburger?.addEventListener('click', () => {
+        const isOpen = hamburger.classList.toggle('open');
+        hamburger.setAttribute('aria-expanded', String(isOpen));
+        mobileMenu.classList.toggle('open', isOpen);
+        mobileMenu.setAttribute('aria-hidden', String(!isOpen));
       });
     </script>
   </body>
@@ -247,6 +278,49 @@ const canonicalUrl = new URL(Astro.url.pathname, 'https://tilluntil.com').toStri
     transition: color 0.15s;
   }
   .theme-toggle:hover { color: var(--text); }
+
+  /* ── Mobile nav ── */
+  .nav-mobile { display: none; align-items: center; gap: 1rem; }
+
+  .hamburger {
+    background: none; border: none; cursor: pointer;
+    padding: 4px; display: flex; flex-direction: column;
+    gap: 5px; justify-content: center;
+  }
+  .hamburger span {
+    display: block; width: 22px; height: 1px;
+    background: var(--text-muted); transition: all 0.2s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+  .mobile-menu {
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--rule-soft);
+    transition: color 0.15s;
+  }
+  .mobile-menu a:last-child { border-bottom: none; }
+  .mobile-menu a:hover { color: var(--text); }
+
+  @media (max-width: 600px) {
+    .nav-links { display: none; }
+    .nav-mobile { display: flex; }
+  }
 
   /* ── Main ── */
   .site-main { min-height: 60vh; }
