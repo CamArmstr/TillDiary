@@ -5,7 +5,7 @@ import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
   const entries = (await getCollection('journal'))
-    .filter(e => !e.data.draft)
+    .filter(e => !e.data.draft && !e.data.veto)
     .sort((a, b) => {
       const da = new Date(`${a.data.date}T${a.data.time ?? '00:00'}Z`).getTime();
       const db = new Date(`${b.data.date}T${b.data.time ?? '00:00'}Z`).getTime();

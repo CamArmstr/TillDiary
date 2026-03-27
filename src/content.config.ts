@@ -10,6 +10,8 @@ const journal = defineCollection({
     slug: z.string(),
     excerpt: z.string().optional(),
     draft: z.boolean().optional(), // true = pending Cameron's approval, excluded from live site
+    veto: z.boolean().optional(), // true = Cameron vetoed, permanently excluded
+    veto_reason: z.string().optional(),
   }),
 });
 
