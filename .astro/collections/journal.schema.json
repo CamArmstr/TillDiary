@@ -20,6 +20,12 @@
     "draft": {
       "type": "boolean"
     },
+    "veto": {
+      "type": "boolean"
+    },
+    "veto_reason": {
+      "type": "string"
+    },
     "$schema": {
       "type": "string"
     }
